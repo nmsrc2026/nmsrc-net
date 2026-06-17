@@ -490,6 +490,10 @@ img { max-width: 100%; display: block; }
   transition: background 0.2s;
 }
 .btn-submit:hover { background: var(--accent-ink); }
+.btn-submit:disabled { opacity: 0.6; cursor: default; }
+.form-status { margin: 4px 0 0; font-size: 14px; font-weight: 600; line-height: 1.5; }
+.form-status.ok { color: var(--accent); }
+.form-status.err { color: #9a3b2f; }
 
 /* ============================================================
    FOOTER

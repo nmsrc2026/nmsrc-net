@@ -165,14 +165,15 @@
         <h2>Contact.</h2>
         <p class="contact-lede">Please use the following contact form if you have any questions with regards to our community or activities.</p>
       </div>
-      <form class="form" onsubmit="return false">
+      <form class="form" id="contact-form">
         <div class="form-row">
-          <div class="field"><label for="fn">First Name</label><input id="fn" type="text"></div>
-          <div class="field"><label for="ln">Last Name</label><input id="ln" type="text"></div>
+          <div class="field"><label for="fn">First Name</label><input id="fn" name="first_name" type="text" required></div>
+          <div class="field"><label for="ln">Last Name</label><input id="ln" name="last_name" type="text"></div>
         </div>
-        <div class="field"><label for="em">Email</label><input id="em" type="email"></div>
-        <div class="field"><label for="ms">Message</label><textarea id="ms"></textarea></div>
+        <div class="field"><label for="em">Email</label><input id="em" name="email" type="email" required></div>
+        <div class="field"><label for="ms">Message</label><textarea id="ms" name="message" required></textarea></div>
         <button class="btn-submit" type="submit">Send</button>
+        <p class="form-status" id="form-status" role="status" aria-live="polite" hidden></p>
       </form>
     </div>
   </section>
@@ -214,6 +215,42 @@
 <script type="text/babel" src="tweaks-panel.jsx"></script>
 <div id="tweaks-root"></div>
 <script type="text/babel" src="tweaks-app.jsx"></script>
+
+<!-- ===================== CONTACT FORM ===================== -->
+<script>
+(function () {
+  var form = document.getElementById('contact-form');
+  if (!form) return;
+  var ENDPOINT = "https://script.google.com/macros/s/AKfycbwdUoNU7E_HmqbH5YGevo6kzvyd5hVaFjOCwkbCaPDenkXroPp9S4A7_AW2AdgRAb2x/exec";
+  var status = document.getElementById('form-status');
+  var btn = form.querySelector('.btn-submit');
+  function show(msg, ok) {
+    if (!status) return;
+    status.hidden = false;
+    status.textContent = msg;
+    status.className = 'form-status ' + (ok ? 'ok' : 'err');
+  }
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var original = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+    var body = new URLSearchParams(new FormData(form));
+    fetch(ENDPOINT, { method: 'POST', body: body, mode: 'no-cors' })
+      .then(function () {
+        form.reset();
+        show('✓ Thank you — your message has been sent.', true);
+      })
+      .catch(function () {
+        show('Something went wrong. Please email us directly at nmsrc2026@gmail.com.', false);
+      })
+      .finally(function () {
+        btn.disabled = false;
+        btn.textContent = original;
+      });
+  });
+})();
+</script>
 
 </body>
 </html>
